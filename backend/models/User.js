@@ -1,17 +1,18 @@
+const Joi = require("joi");
 const mongoose = require("mongoose");
 
 // User Schema
 const UserSchema = new mongoose.Schema(
   {
     username: {
-      type: string,
+      type: String,
       required: true,
       trim: true,
       minlength: 2,
       maxlength: 100,
     },
     email: {
-      type: string,
+      type: String,
       required: true,
       trim: true,
       minlength: 5,
@@ -19,7 +20,7 @@ const UserSchema = new mongoose.Schema(
       unique: true,
     },
     password: {
-      type: string,
+      type: String,
       required: true,
       trim: true,
       minlength: 8,
@@ -33,7 +34,7 @@ const UserSchema = new mongoose.Schema(
       },
     },
     bio: {
-      type: string,
+      type: String,
     },
     isAdmin: {
       type: Boolean,
@@ -50,6 +51,30 @@ const UserSchema = new mongoose.Schema(
 // User model
 const User = mongoose.model("User", UserSchema);
 
+// Validation
+function registerUserValidation(obj) {
+  const schema = Joi.object({
+    username: Joi.string()
+      .trim()
+      .min(2)
+      .max(100)
+      .required(),
+    email: Joi.string()
+      .trim()
+      .min(5)
+      .max(100)
+      .required()
+      .email(),
+    password: Joi.string()
+      .trim()
+      .min(5)
+      .required(),
+  });
+
+  return schema.validate(obj);
+}
+
 module.exports = {
   User,
+  registerUserValidation,
 };
